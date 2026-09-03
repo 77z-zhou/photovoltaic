@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>光储直租平台 · 信息架构原型</title>
+  <style>
+    :root { --ink:#0f172a; --muted:#64748b; --line:#dbe3ec; --bg:#f4f7fb; --surface:#fff; --blue:#1769e0; --green:#10a36a; --orange:#f08a24; --red:#d84747; --shadow:0 12px 30px rgba(23,48,85,.08); }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:Inter,-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; }
+    button { font:inherit; color:inherit; cursor:pointer; }
+    .app { min-height:100vh; }
+    .topbar { height:72px; background:#fff; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; padding:0 36px; position:sticky; top:0; z-index:3; }
+    .brand { display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.02em; }
+    .brand-mark { width:32px; height:32px; border-radius:9px; background:linear-gradient(145deg,#1769e0,#4aa6ff); color:#fff; display:grid; place-items:center; font-weight:800; }
+    .top-actions { display:flex; align-items:center; gap:16px; color:var(--muted); font-size:14px; }
+    .avatar { width:34px; height:34px; border-radius:50%; background:#dbeafe; color:#1769e0; display:grid; place-items:center; font-weight:700; }
+    .shell { display:grid; grid-template-columns:224px minmax(0,1fr); min-height:calc(100vh - 72px); }
+    .rail { background:#fff; border-right:1px solid var(--line); padding:26px 14px; }
+    .rail-title { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.08em; padding:0 14px 12px; }
+    .nav { display:grid; gap:6px; }
+    .nav button { border:0; background:transparent; text-align:left; padding:12px 14px; border-radius:10px; font-size:14px; display:flex; justify-content:space-between; align-items:center; }
+    .nav button.active { background:#eaf3ff; color:var(--blue); font-weight:700; }
+    .count { min-width:22px; height:22px; border-radius:11px; background:#eef2f7; color:var(--muted); display:grid; place-items:center; font-size:12px; }
+    .content { padding:34px 40px 120px; max-width:1440px; width:100%; margin:0 auto; }
+    .eyebrow { color:var(--blue); font-size:13px; font-weight:700; letter-spacing:.06em; }
+    h1 { font-size:30px; margin:8px 0 8px; letter-spacing:-.02em; }
+    h2 { font-size:18px; margin:0; }
+    .sub { color:var(--muted); margin:0 0 28px; }
+    .grid { display:grid; gap:18px; }
+    .kpis { grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .card { background:var(--surface); border:1px solid rgba(219,227,236,.8); border-radius:10px; box-shadow:var(--shadow); }
+    .kpi { padding:20px; }
+    .kpi-label { color:var(--muted); font-size:13px; }
+    .kpi-value { font-size:30px; font-weight:800; margin:10px 0 4px; }
+    .delta { color:var(--green); font-size:12px; }
+    .split { grid-template-columns:1.35fr .85fr; margin-top:18px; }
+    .panel { padding:22px; }
+    .panel-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
+    .link { border:0; background:none; color:var(--blue); font-size:13px; }
+    .pipeline { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; }
+    .stage { border-top:3px solid #cbd5e1; padding-top:12px; }
+    .stage:nth-child(2){border-color:#93c5fd}.stage:nth-child(3){border-color:#60a5fa}.stage:nth-child(4){border-color:#fbbf24}.stage:nth-child(5){border-color:#34d399}.stage:nth-child(6){border-color:#10b981}
+    .stage strong { display:block; font-size:24px; }
+    .stage span { color:var(--muted); font-size:12px; }
+    .list { display:grid; gap:10px; }
+    .row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 0; border-bottom:1px solid #edf1f5; }
+    .row:last-child { border-bottom:0; }
+    .row-main { min-width:0; }
+    .row-title { font-weight:700; font-size:14px; }
+    .row-meta { color:var(--muted); font-size:12px; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .tag { padding:5px 8px; border-radius:6px; font-size:11px; white-space:nowrap; background:#eef6ff; color:#1769e0; }
+    .tag.warn { background:#fff5e8; color:#b96705; }.tag.ok{background:#e9f8f1;color:#078456}.tag.bad{background:#ffeded;color:#bd3636}
+    .mobile { display:none; }
+    .phone { max-width:440px; margin:0 auto; background:#f7faff; min-height:calc(100vh - 72px); padding:26px 18px 105px; }
+    .phone-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:22px; }
+    .phone h1 { font-size:29px; margin:0; }.phone .sub { margin:6px 0 0; font-size:13px; }
+    .hero { background:linear-gradient(135deg,#0c4e9b,#1d82e8); color:#fff; border-radius:18px; padding:22px; position:relative; overflow:hidden; }
+    .hero:after { content:""; position:absolute; width:190px; height:190px; border:1px solid rgba(255,255,255,.25); border-radius:50%; right:-75px; top:-75px; }
+    .hero-title { font-size:20px; font-weight:800; }.hero-copy { color:#d9ecff; font-size:13px; line-height:1.7; margin:9px 0 18px; max-width:280px; }
+    .hero button { border:0; background:#fff; color:#1769e0; border-radius:8px; padding:10px 13px; font-weight:700; }
+    .phone-section { margin-top:24px; }.section-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .quick-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:9px; }.quick { border:0; background:#fff; border-radius:12px; padding:14px 7px; box-shadow:0 6px 18px rgba(23,48,85,.06); font-size:12px; }.quick b { display:grid; place-items:center; width:35px; height:35px; margin:0 auto 8px; border-radius:10px; color:#fff; background:#2677de; font-size:16px; }.quick:nth-child(2) b{background:#10a36a}.quick:nth-child(3) b{background:#8a5de8}.quick:nth-child(4) b{background:#f08a24}
+    .progress-card { background:#fff; border-radius:14px; padding:18px; box-shadow:0 6px 18px rgba(23,48,85,.06); }.progress-line { display:flex; align-items:center; gap:7px; margin:18px 0 7px; }.dot { width:22px; height:22px; border-radius:50%; background:#dbeafe; color:#1769e0; display:grid; place-items:center; font-size:11px; font-weight:800; }.dot.done{background:#1769e0;color:#fff}.connector { height:2px; flex:1; background:#dbeafe; }.progress-labels { display:flex; justify-content:space-between; color:var(--muted); font-size:11px; }.bottom-nav { position:fixed; left:50%; transform:translateX(-50%); bottom:18px; background:#fff; border:1px solid var(--line); box-shadow:0 12px 30px rgba(23,48,85,.15); border-radius:18px; padding:8px; display:flex; gap:4px; z-index:5; }.bottom-nav button { border:0; background:transparent; min-width:86px; padding:10px 8px; border-radius:12px; font-size:12px; color:var(--muted); }.bottom-nav button.active { background:#eaf3ff; color:var(--blue); font-weight:700; }
+    .command { padding:30px 36px 120px; max-width:1500px; margin:auto; }.command-top { display:flex; justify-content:space-between; gap:20px; align-items:end; margin-bottom:24px; }.command-actions { display:flex; gap:10px; }.primary { border:0; background:var(--blue); color:#fff; padding:11px 15px; border-radius:8px; font-weight:700; }.secondary { border:1px solid var(--line); background:#fff; padding:10px 14px; border-radius:8px; }
+    .board { display:grid; grid-template-columns:repeat(5,minmax(190px,1fr)); gap:14px; overflow:auto; padding-bottom:10px; }.lane { background:#eef3f8; border-radius:10px; padding:12px; min-height:390px; }.lane-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; font-size:13px; font-weight:800; }.lane-count { color:var(--muted); font-size:12px; }.ticket { background:#fff; border:1px solid var(--line); border-radius:8px; padding:13px; margin-bottom:10px; box-shadow:0 3px 10px rgba(23,48,85,.04); }.ticket-title { font-size:13px; font-weight:700; line-height:1.5; }.ticket-meta { color:var(--muted); font-size:11px; margin-top:10px; display:flex; justify-content:space-between; }.meter { height:5px; border-radius:5px; background:#e6edf5; margin-top:12px; overflow:hidden; }.meter i { display:block; height:100%; background:#1769e0; width:65%; }.meter.green i{background:#10a36a;width:88%}.meter.orange i{background:#f08a24;width:35%}
+    .switcher { position:fixed; z-index:9; bottom:18px; left:50%; transform:translateX(-50%); background:#101c2e; color:#fff; border-radius:999px; padding:6px; display:flex; gap:8px; align-items:center; box-shadow:0 14px 35px rgba(15,23,42,.3); }.switcher button { width:36px; height:36px; border:0; color:#fff; background:transparent; border-radius:50%; font-size:20px; }.switcher button:hover{background:#263852}.switcher-label{font-size:12px; min-width:150px; text-align:center;}.prototype-note { position:fixed; top:84px; right:20px; z-index:4; font-size:11px; color:#64748b; background:#fff; padding:7px 9px; border:1px solid var(--line); border-radius:6px; }
+    @media (max-width:900px){ .shell{display:block}.rail{display:none}.content{padding:26px 18px 110px}.kpis{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr}.pipeline{grid-template-columns:repeat(3,1fr);row-gap:18px}.command{padding:24px 18px 110px}.command-top{align-items:flex-start;flex-direction:column}.board{grid-template-columns:repeat(5,220px)}.topbar{padding:0 18px}.top-actions span{display:none}.switcher-label{min-width:125px}}
+    @media (max-width:560px){.topbar{height:62px}.shell{min-height:calc(100vh - 62px)}.kpis{gap:10px}.kpi{padding:14px}.kpi-value{font-size:24px}.panel{padding:16px}.quick-grid{grid-template-columns:repeat(2,1fr);gap:10px}.bottom-nav{bottom:10px;left:10px;right:10px;transform:none;justify-content:space-between}.bottom-nav button{min-width:0;flex:1}.prototype-note{top:70px;right:10px}.switcher{bottom:74px}.phone{min-height:calc(100vh - 62px)}}
+  </style>
+</head>
+<body>
+  <div id="app" class="app"></div>
+  <div class="prototype-note">临时原型 · 仅用于评审信息架构</div>
+  <div class="switcher" aria-label="切换原型方案">
+    <button id="prev" aria-label="上一个方案">‹</button><div class="switcher-label" id="variantLabel"></div><button id="next" aria-label="下一个方案">›</button>
+  </div>
+  <script>
+    const variants = { A: '角色工作台', B: '移动任务流', C: '运营指挥台' };
+    const getVariant = () => (new URLSearchParams(location.search).get('variant') || 'A').toUpperCase();
+    const go = (key) => { const url = new URL(location.href); url.searchParams.set('variant', key); history.replaceState({}, '', url); render(); };
+    const nav = (active) => `<nav class="nav">${[['总览','A'],['客户与项目','A'],['审批中心','A'],['合同与账单','A'],['电站资产','A'],['资金方协同','A']].map(([label]) => `<button class="${label===active?'active':''}">${label}<span class="count">${label==='审批中心'?3:''}</span></button>`).join('')}</nav>`;
+    const topbar = () => `<header class="topbar"><div class="brand"><span class="brand-mark">光</span><span>光储直租平台</span></div><div class="top-actions"><span>演示项目公司</span><span>通知  ·  3</span><span class="avatar">运</span></div></header>`;
+    function variantA(){ return `${topbar()}<div class="shell"><aside class="rail"><div class="rail-title">运营管理</div>${nav('总览')}</aside><main class="content"><div class="eyebrow">运营总览</div><h1>今天，先处理最接近结单的项目</h1><p class="sub">围绕项目状态、风险和现金流安排工作。</p><section class="grid kpis"><div class="card kpi"><div class="kpi-label">进行中项目</div><div class="kpi-value">28</div><div class="delta">较上月 +12%</div></div><div class="card kpi"><div class="kpi-label">待审批资料</div><div class="kpi-value">6</div><div class="delta" style="color:#b96705">需今日处理</div></div><div class="card kpi"><div class="kpi-label">本月回款</div><div class="kpi-value">¥184.6k</div><div class="delta">完成率 82%</div></div><div class="card kpi"><div class="kpi-label">运行电站</div><div class="kpi-value">41</div><div class="delta">在线率 98.2%</div></div></section><section class="grid split"><div class="card panel"><div class="panel-head"><h2>项目生命周期</h2><button class="link">查看全部</button></div><div class="pipeline">${[['勘测中','4'],['待审批','6'],['待签约','3'],['建设中','8'],['待验收','2'],['运营中','41']].map(([a,b])=>`<div class="stage"><strong>${b}</strong><span>${a}</span></div>`).join('')}</div><div class="panel-head" style="margin:28px 0 0"><h2>最近项目</h2><button class="link">项目列表</button></div><div class="list">${[['华东智造园区','勘测中 · 代理商 星合能源','待处理'],['南通新材料工厂','待审批 · 客户组织 南材实业','待审批'],['苏州科创园屋顶','建设中 · 预计 6 月并网','建设中']].map(([a,b,c],i)=>`<div class="row"><div class="row-main"><div class="row-title">${a}</div><div class="row-meta">${b}</div></div><span class="tag ${i===1?'warn':''}">${c}</span></div>`).join('')}</div></div><div class="card panel"><div class="panel-head"><h2>待办提醒</h2><button class="link">全部</button></div><div class="list">${[['补充屋顶产权材料','南材实业 · 2 小时前','warn'],['审核施工验收照片','华东智造园区 · 今天',''],['确认本月账单调整单','3 个项目 · 今天','bad'],['资金方补件反馈','绿色基金 A · 昨天','']].map(([a,b,c])=>`<div class="row"><div class="row-main"><div class="row-title">${a}</div><div class="row-meta">${b}</div></div><span class="tag ${c}">处理</span></div>`).join('')}</div></div></section></main></div>`; }
+    function variantB(){ return `<div class="phone">${topbar()}<div class="phone-head"><div><h1>首页</h1><p class="sub">让每一度阳光都更有价值</p></div><span class="avatar">客</span></div><section class="hero"><div class="hero-title">苏州科创园屋顶项目</div><div class="hero-copy">当前已并网，正在按合同进行节余电费结算。下期账单将在 6 月 10 日生成。</div><button>查看项目进度</button></section><section class="phone-section"><div class="section-head"><h2>常用服务</h2><button class="link">全部</button></div><div class="quick-grid"><button class="quick"><b>申</b>提交申请</button><button class="quick"><b>账</b>我的账单</button><button class="quick"><b>站</b>电站监控</button><button class="quick"><b>问</b>在线客服</button></div></section><section class="phone-section"><div class="section-head"><h2>项目进度</h2><button class="link">详情</button></div><div class="progress-card"><div class="row-title">苏州科创园屋顶项目</div><div class="row-meta">项目编号 PRJ-2026-018 · 预计运营期 36 个月</div><div class="progress-line"><span class="dot done">1</span><span class="connector"></span><span class="dot done">2</span><span class="connector"></span><span class="dot done">3</span><span class="connector"></span><span class="dot">4</span></div><div class="progress-labels"><span>申请</span><span>签约</span><span>并网</span><span>结清</span></div></div></section><section class="phone-section"><div class="section-head"><h2>本月账单</h2><button class="link">账单中心</button></div><div class="progress-card"><div class="row"><div><div class="row-title">2026 年 5 月</div><div class="row-meta">动态能源结算 · 应付日 6 月 10 日</div></div><strong style="font-size:20px">¥2,680.00</strong></div><div class="row" style="padding-bottom:0"><span class="row-meta">预计节省电费 ¥4,160.00</span><span class="tag warn">待支付</span></div></div></section></div><div class="bottom-nav"><button class="active">首页</button><button>消息</button><button>项目</button><button>账单</button><button>我的</button></div>`; }
+    function variantC(){ const lanes=[['待审批', [['南材实业 · 资料补充','风控 · 2h','orange'],['江苏智造 · 初审','风控 · 今天','']]],['待签约', [['华东园区 · 合同确认','运营 · 今天',''],['苏州科创 · 签署失败','客户 · 昨天','orange']]],['建设中', [['无锡新能 · 现场施工','施工 · 65%',''],['常州金属 · 并网资料','项目 · 88%','green']]],['待验收', [['湖州玻璃 · 终检验收','运维 · 今天','orange']]],['运营/还款', [['苏州科创园 · 5 月账单','财务 · 待生成','green'],['南通厂区 · 代扣失败','财务 · 需重试','orange']]]]; return `${topbar()}<main class="command"><div class="command-top"><div><div class="eyebrow">项目指挥台</div><h1>把每个项目推向下一节点</h1><p class="sub">按状态集中处理跨角色协同事项，所有动作留有审计记录。</p></div><div class="command-actions"><button class="secondary">导出报表</button><button class="primary">新建项目</button></div></div><section class="card panel" style="margin-bottom:18px"><div class="panel-head"><h2>全流程看板</h2><div><button class="link">我的待办</button><button class="link">筛选</button></div></div><div class="board">${lanes.map(([name,tickets])=>`<div class="lane"><div class="lane-head"><span>${name}</span><span class="lane-count">${tickets.length}</span></div>${tickets.map(([a,b,c])=>`<article class="ticket"><div class="ticket-title">${a}</div><div class="ticket-meta"><span>${b}</span><span>›</span></div><div class="meter ${c}"><i></i></div></article>`).join('')}</div>`).join('')}</div></section><section class="grid" style="grid-template-columns:1fr 1fr"><div class="card panel"><div class="panel-head"><h2>风险与异常</h2><button class="link">查看规则</button></div><div class="list">${[['3 个项目待补件','资料完整性','warn'],['1 笔扣款未知结果','支付回调','bad'],['2 台设备离线','IoT 数据','bad']].map(([a,b,c])=>`<div class="row"><div><div class="row-title">${a}</div><div class="row-meta">${b}</div></div><span class="tag ${c}">查看</span></div>`).join('')}</div></div><div class="card panel"><div class="panel-head"><h2>资金与结算</h2><button class="link">财务中心</button></div><div class="list">${[['本月应收','¥246,800','green'],['待对账批次','4 批','warn'],['累计已结清项目','12 个','']].map(([a,b,c])=>`<div class="row"><div class="row-title">${a}</div><span class="tag ${c}">${b}</span></div>`).join('')}</div></div></section></main>`; }
+    function render(){ const key=getVariant(); document.getElementById('app').innerHTML=key==='B'?variantB():key==='C'?variantC():variantA(); document.getElementById('variantLabel').textContent=`${key} · ${variants[key]||variants.A}`; }
+    const cycle = (delta) => { const keys=Object.keys(variants); const i=Math.max(0,keys.indexOf(getVariant())); go(keys[(i+delta+keys.length)%keys.length]); };
+    document.getElementById('prev').onclick=()=>cycle(-1); document.getElementById('next').onclick=()=>cycle(1);
+    document.addEventListener('keydown', e=>{ if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)||document.activeElement.isContentEditable)return; if(e.key==='ArrowLeft')cycle(-1); if(e.key==='ArrowRight')cycle(1); });
+    render();
+  </script>
+</body>
+</html>
